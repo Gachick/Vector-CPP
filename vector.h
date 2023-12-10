@@ -139,7 +139,7 @@ vector<T, A> &vector<T, A>::operator=(const vector<T, A> &a)
         for (int i = 0; i < a.sz; ++i)
             alloc.construct(&elem[i], a.elem[i]);
         sz = a.sz;
-        return *this; // check alements after size
+        return *this;
     }
 
     std::unique_ptr<T[]> p(alloc.allocate(a.sz));
