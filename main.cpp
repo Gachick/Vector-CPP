@@ -22,6 +22,12 @@ vector<double> make_vec()
     return move;
 }
 
+vector<vector<double>> check_move_leak()
+{
+    vector<vector<double>> vofv(5, vector<double>(100000, 1.2));
+    return vofv;
+}
+
 int main()
 {
     test_leak();
@@ -43,14 +49,14 @@ int main()
     vector<double> e{copy};
     std::cout << "Copy constructor " << e << "\n";
     vector<double> f;
-    f = e;
+    // f = e;
     std::cout << "Copy operator " << f << "\n";
 
     vector<double> g{make_vec()};
-    std::cout << "Copy constructor " << g << "\n";
+    std::cout << "Move constructor " << g << "\n";
     vector<double> j;
     j = make_vec();
-    std::cout << "Copy operator " << j << "\n";
+    std::cout << "Move operator " << j << "\n";
 
     vector<std::complex<double>> k{std::complex<double>{1, 2}, std::complex<double>{3, 4}};
     std::cout << "Complex type " << k << "\n";
@@ -76,9 +82,24 @@ int main()
     //     std::cout << "Loop";
     // }
 
-    vector<std::string> type_test;
-    // type_test.push_back(1);
-    vector<vector<int>> vofv(5, vector<int>(5, 5));
-    vofv[1][2] = 13;
-    std::cout << vofv;
+    // vector<std::string> type_test;
+    //  type_test.push_back(1);
+
+    vector<vector<double>> vofv;
+
+    // while (true)
+    // {
+    //     vofv = check_move_leak();
+    //     std::cout << "Loop";
+    // }
+
+    while (true)
+    {
+        vector<vector<double>> vofvc(5, vector<double>(100000, 1.2));
+        vofv = vofvc;
+        std::cout << "Loop";
+    }
+
+    // vofv[1][2] = 13;
+    // std::cout << vofv;
 }

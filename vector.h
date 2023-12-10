@@ -43,7 +43,7 @@ public:
     vector(vector &&);
     vector &operator=(vector &&);
 
-    ~vector() { alloc.deallocate(elem); };
+    ~vector();
 
     T &operator[](int n) { return elem[n]; };
     const T &operator[](int n) const { return elem[n]; };
@@ -60,10 +60,13 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const vector &vec)
     {
+
         os << "[";
         for (int i = 0; i < vec.size(); ++i)
             os << vec[i] << ", ";
-        os << "\b\b]";
+        if (vec.size() != 0)
+            os << "\b\b";
+        os << "]";
         return os;
     }
 };
@@ -98,7 +101,7 @@ template <typename T, typename A>
 vector<T, A>::vector(const vector<T, A> &a)
     : sz{a.size()}, elem{alloc.allocate(a.sz)}, space{a.size()}
 {
-    std::copy(a.elem, a.elem + a.sz, elem); // PROBLEMS
+    std::copy(a.elem, a.elem + a.sz, elem);
 }
 
 template <typename T, typename A>
@@ -112,6 +115,8 @@ vector<T, A>::vector(vector<T, A> &&a)
 template <typename T, typename A>
 vector<T, A> &vector<T, A>::operator=(vector<T, A> &&a)
 {
+    for (int i = 0; i < sz; ++i)
+        alloc.destroy(&elem[i]);
     alloc.deallocate(elem);
     elem = a.elem;
     sz = a.sz;
@@ -126,17 +131,21 @@ vector<T, A> &vector<T, A>::operator=(const vector<T, A> &a)
     if (this == &a)
         return *this;
 
+    for (int i = 0; i < sz; ++i)
+        alloc.destroy(&elem[i]);
+
     if (a.sz <= space)
     {
         for (int i = 0; i < a.sz; ++i)
-            elem[i] = a.elem[i];
+            alloc.construct(&elem[i], a.elem[i]);
         sz = a.sz;
         return *this; // check alements after size
     }
 
     std::unique_ptr<T[]> p(alloc.allocate(a.sz));
     for (int i = 0; i < a.sz; ++i)
-        p[i] = a.elem[i];
+        alloc.construct(&p[i], a.elem[i]);
+    std::cout << "whut";
     alloc.deallocate(elem);
     space = sz = a.sz;
     elem = p.release();
@@ -186,6 +195,14 @@ void vector<T, A>::resize(int newsize, T val)
     for (int i = newsize; i < sz; ++i)
         alloc.destroy(&elem[i]);
     sz = newsize;
+}
+
+template <typename T, typename A>
+vector<T, A>::~vector()
+{
+    for (int i = 0; i < sz; ++i)
+        alloc.destroy(&elem[i]);
+    alloc.deallocate(elem);
 }
 
 //------------------------------------------------------------------------------
