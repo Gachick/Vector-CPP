@@ -49,7 +49,7 @@ int main()
     vector<double> e{copy};
     std::cout << "Copy constructor " << e << "\n";
     vector<double> f;
-    // f = e;
+    f = e;
     std::cout << "Copy operator " << f << "\n";
 
     vector<double> g{make_vec()};
@@ -87,18 +87,18 @@ int main()
 
     vector<vector<double>> vofv;
 
-    // while (true)
+        // while (true)
     // {
     //     vofv = check_move_leak();
     //     std::cout << "Loop";
     // }
 
-    while (true)
-    {
-        vector<vector<double>> vofvc(5, vector<double>(100000, 1.2));
-        vofv = vofvc;
-        std::cout << "Loop";
-    }
+    // while (true)
+    // {
+    //     vector<vector<double>> vofvc(5, vector<double>(100000, 1.2));
+    //     vofv = vofvc;
+    //     std::cout << "Loop";
+    // }
 
     // vofv[1][2] = 13;
     // std::cout << vofv;

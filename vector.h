@@ -106,10 +106,11 @@ vector<T, A>::vector(const vector<T, A> &a)
 
 template <typename T, typename A>
 vector<T, A>::vector(vector<T, A> &&a)
-    : sz{a.sz}, elem{a.elem}, space{a.sz}
+    : sz{a.sz}, elem{a.elem}, space{a.space}
 {
     a.sz = 0;
     a.elem = nullptr;
+    a.space = 0;
 }
 
 template <typename T, typename A>
@@ -120,8 +121,10 @@ vector<T, A> &vector<T, A>::operator=(vector<T, A> &&a)
     alloc.deallocate(elem);
     elem = a.elem;
     sz = a.sz;
+    space = a.space;
     a.elem = nullptr;
     a.sz = 0;
+    a.space = 0;
     return *this;
 }
 
@@ -145,7 +148,6 @@ vector<T, A> &vector<T, A>::operator=(const vector<T, A> &a)
     std::unique_ptr<T[]> p(alloc.allocate(a.sz));
     for (int i = 0; i < a.sz; ++i)
         alloc.construct(&p[i], a.elem[i]);
-    std::cout << "whut";
     alloc.deallocate(elem);
     space = sz = a.sz;
     elem = p.release();
